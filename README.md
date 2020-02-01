@@ -20,11 +20,41 @@ OPTIONS
   -v, --version  show CLI version
 
 ```
+# Quick Start Example
+In the examples folder is given a letters example which batch generates text files with parameters given in the acchuwa config.
+
+1. Install acchuwa
+    ```sh
+    npm install -g @kaveenr/acchuwa
+    ```
+2. Clone repository and navigate into the repository
+    ```sh
+    git clone https://github.com/kaveenr/acchuwa
+
+    cd acchuwa
+    ```
+3. Run the example.
+    ```sh
+    acchuwa example/letters/acchuwa.conf.json
+    ```
+If you observe the example directory, files will be generated to the configured folder.
+```sh
+tree example/letters 
+example/letters
+├── acchuwa.conf.json
+├── gen
+│   ├── letter-for-John.txt
+│   ├── letter-for-මංගලිකා.txt
+│   └── letter-for-සමන්.txt
+└── letter.txt.hbs
+
+1 directory, 5 files
+```
 # Example Acchuwa Config
 
 ```json 
 {
-    "acchuwaVersion": "0.0.1",
+    "acchuwaVersion": "0.0.2",
     "templates": [
         {
             "template": {
