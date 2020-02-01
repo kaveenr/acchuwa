@@ -1,11 +1,18 @@
 import {Command, flags} from '@oclif/command'
-import {getAcchuwaService} from './core'
+import {getAcchuwaService, ConfigModel} from './core'
 import {readFileSync} from 'fs'
 import {dirname} from 'path'
-import {ConfigModel} from './core/models/config-models'
+import {safeLoad} from 'js-yaml'
+import * as pino from 'pino'
 
 class Acchuwa extends Command {
   static description = 'Acchuwa quick and dirty templating'
+
+  static logger = pino({
+    name: 'Acchuwa CLI',
+    level: 'info',
+    prettyPrint: true,
+  })
 
   static flags = {
     version: flags.version({char: 'v'}),
@@ -17,12 +24,11 @@ class Acchuwa extends Command {
   async run() {
     const {args} = this.parse(Acchuwa)
 
-    // Load Configuration file from disk
-    const configFile = readFileSync(args.config_file, 'utf-8')
-    // Parse JSON into model
-    const config = JSON.parse(configFile) as ConfigModel
+    const filePath = args.config_file
+    const configFile = readFileSync(filePath, 'utf-8')
+    const config = safeLoad(configFile) as ConfigModel
 
-    const service = getAcchuwaService(dirname(args.config_file))
+    const service = getAcchuwaService(dirname(args.config_file), Acchuwa.logger)
     service.generate(config)
   }
 }

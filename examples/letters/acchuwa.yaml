@@ -1,0 +1,10 @@
+acchuwa: 0.0.2
+templates:
+  Generate letters on Acchuwa:
+    file: letter.txt.hbs
+    outputDirectory: gen/
+    outFileTemplate: letter-for-{{name}}.txt
+parameters:
+- name: John
+- name: මංගලිකා
+- name: සමන්

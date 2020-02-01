@@ -1,8 +1,9 @@
-import {ConfigModel, AcchuModel} from './models/config-models'
+import {ConfigModel, AcchuTemplateModel} from './models/config-models'
 import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'fs'
 import {compile, registerHelper, SafeString} from 'handlebars'
 import {join} from 'path'
 import {singular, plural} from 'pluralize'
+import {BaseLogger} from 'pino'
 
 export interface AcchuwaServiceFacade {
   generate(config: ConfigModel): boolean;
@@ -11,8 +12,12 @@ export interface AcchuwaServiceFacade {
 export class AcchuwaService implements AcchuwaServiceFacade {
     private basePath: string;
 
-    constructor(basePath: string) {
+    private log: BaseLogger;
+
+    constructor(basePath: string, logger: BaseLogger) {
       this.basePath = basePath
+      this.log = logger
+
       registerHelper('singular', text => {
         return new SafeString(singular(text))
       })
@@ -22,29 +27,32 @@ export class AcchuwaService implements AcchuwaServiceFacade {
     }
 
     generate(config: ConfigModel): boolean {
-      for (const singleTemplate of config.templates) {
-        this.processTemplate(singleTemplate)
+      for (const [templateName, template] of Object.entries(config.templates)) {
+        this.log.info('Procesing Acchu template ' + templateName)
+        this.processTemplate(template, config.parameters)
       }
       return true
     }
 
-    private processTemplate(template: AcchuModel) {
+    private processTemplate(template: AcchuTemplateModel, parameters: Array<any>) {
       const hbsTemplate: HandlebarsTemplateDelegate = compile(
-        this.loadTemplate(template.template.file)
+        this.loadTemplate(template.file)
       )
 
-      // Output directory
-      const outPath = join(this.basePath, template.template.outputDirectory)
+      const outPath = join(this.basePath, template.outputDirectory)
       if (!existsSync(outPath)) {
-        mkdirSync(outPath)
+        this.log.info('Path ' + outPath + ' doesn\'t exist, creating path')
+        mkdirSync(outPath, {recursive: true})
       }
 
-      for (const params of template.parameters) {
-        const fileName = this.buildFilename(template.template.outFileTemplate, params)
+      for (const params of parameters) {
+        const fileName = this.buildFilename(template.outFileTemplate, params)
         const fileContent = hbsTemplate(params)
 
         this.writeOutput(fileName, fileContent, outPath)
+        this.log.info('Compiled file ' + fileName)
       }
+      this.log.info('Processed ' + parameters.length + ' parameters for template')
     }
 
     private writeOutput(fileName: string, fileContent: string, outputDirectory: string) {

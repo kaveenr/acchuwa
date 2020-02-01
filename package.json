@@ -1,7 +1,7 @@
 {
   "name": "@kaveenr/acchuwa",
   "description": "Acchuwa quick and dirty templating",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "author": "Kaveen Rodrigo @kaveenr",
   "bin": {
     "acchuwa": "./bin/run"
@@ -11,8 +11,13 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/js-yaml": "^3.12.2",
+    "@types/pino": "^5.15.4",
     "@types/pluralize": "^0.0.29",
     "handlebars": "^4.7.2",
+    "js-yaml": "^3.13.1",
+    "pino": "^5.16.0",
+    "pino-pretty": "^3.5.0",
     "pluralize": "^8.0.0",
     "tslib": "^1"
   },

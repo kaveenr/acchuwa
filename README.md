@@ -27,7 +27,7 @@ In the examples folder is given a letters example which batch generates text fil
     ```sh
     npm install -g @kaveenr/acchuwa
     ```
-2. Clone repository and navigate into the repository
+2. Clone repository and navigate into the repository.
     ```sh
     git clone https://github.com/kaveenr/acchuwa
 
@@ -35,12 +35,12 @@ In the examples folder is given a letters example which batch generates text fil
     ```
 3. Run the example.
     ```sh
-    acchuwa example/letters/acchuwa.conf.json
+    acchuwa examples/letters/acchuwa.conf.json
     ```
 If you observe the example directory, files will be generated to the configured folder.
 ```sh
-tree example/letters 
-example/letters
+tree examples/letters 
+examples/letters
 ├── acchuwa.conf.json
 ├── gen
 │   ├── letter-for-John.txt
@@ -51,23 +51,17 @@ example/letters
 1 directory, 5 files
 ```
 # Example Acchuwa Config
+Acchu configurations are written in YAML. A single configuration file can contain multiple templates that will be run against given parameter groups.
+```yaml 
+acchuwa: 1.0.0
+templates:
+  Generate letters on Acchuwa:
+    file: letter.txt.hbs
+    outputDirectory: gen/
+    outFileTemplate: letter-for-{{name}}.txt
+parameters:
+- name: John
+- name: මංගලිකා
+- name: සමන්
 
-```json 
-{
-    "acchuwaVersion": "0.0.2",
-    "templates": [
-        {
-            "template": {
-                "name": "Generate CRUD API path",
-                "file": "templates/crud.yaml.hbs",
-                "outputDirectory": "generated/",
-                "outFileTemplate": "{{type}}-partial.yaml"
-            },
-            "parameters": [{
-                "type": "pet",
-                "tag": "CRUD for Pets"
-            }]
-        }
-    ]
-}
 ```
