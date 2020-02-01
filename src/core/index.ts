@@ -1,8 +1,7 @@
-import { IAcchuwaService } from './IAcchuwaService';
-import { AcchuwaService } from './AcchuwaService';
+import {AcchuwaService, AcchuwaServiceFacade} from './acchuwa-service'
 
-export { IAcchuwaService };
+export {AcchuwaServiceFacade}
 
-export function getAcchuwaService(basePath: string): IAcchuwaService {
-    return new AcchuwaService(basePath);
+export function getAcchuwaService(basePath: string): AcchuwaServiceFacade {
+  return new AcchuwaService(basePath)
 }

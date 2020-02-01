@@ -3,11 +3,11 @@
 
 Acchuwa quick and dirty templating based on [handlebars](https://handlebarsjs.com/guide/#simple-expressions).
 
-*The project name Acchuwa, is the Sinhala word අච්චුව which translates to template*
+*The project name Acchuwa, is the Sinhala word "අච්චුව" which translates to template*
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 
-# Usage
+# CLI Usage
 ```sh-session
 $ acchuwa --help [COMMAND]
 Acchuwa quick and dirty templating

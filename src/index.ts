@@ -1,8 +1,8 @@
 import {Command, flags} from '@oclif/command'
-import { IAcchuwaService, getAcchuwaService } from './core'
-import { readFileSync } from "fs";
-import { dirname } from "path";
-import { IConfigModel } from './core/models/ConfigModels';
+import {getAcchuwaService} from './core'
+import {readFileSync} from 'fs'
+import {dirname} from 'path'
+import {ConfigModel} from './core/models/config-models'
 
 class Acchuwa extends Command {
   static description = 'Acchuwa quick and dirty templating'
@@ -15,15 +15,15 @@ class Acchuwa extends Command {
   static args = [{name: 'config_file'}]
 
   async run() {
-    const {args, flags} = this.parse(Acchuwa);
+    const {args} = this.parse(Acchuwa)
 
     // Load Configuration file from disk
-    const configFile = readFileSync(args.config_file,"utf-8");
+    const configFile = readFileSync(args.config_file, 'utf-8')
     // Parse JSON into model
-    const config = <IConfigModel> JSON.parse(configFile);
+    const config = JSON.parse(configFile) as ConfigModel
 
-    const service = getAcchuwaService(dirname(args.config_file));
-    service.generate(config);
+    const service = getAcchuwaService(dirname(args.config_file))
+    service.generate(config)
   }
 }
 
