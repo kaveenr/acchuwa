@@ -51,7 +51,7 @@ export class AcchuwaService implements AcchuwaServiceFacade {
         }
       }
       for (const [templateName, template] of Object.entries(config.templates)) {
-        this.log.info('Procesing Acchu template ' + templateName)
+        this.log.info('Processing Acchu template ' + templateName)
         this.processTemplate(template, config.parameters)
       }
       return true
