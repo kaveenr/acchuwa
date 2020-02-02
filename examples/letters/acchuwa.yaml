@@ -1,4 +1,4 @@
-acchuwa: 1.0.0
+acchuwa: 1.1.0
 templates:
   Generate letters on Acchuwa:
     file: letter.txt.hbs

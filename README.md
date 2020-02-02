@@ -41,27 +41,33 @@ If you observe the example directory, files will be generated to the configured 
 ```sh
 tree examples/letters 
 examples/letters
-├── acchuwa.conf.json
+├── acchuwa.yaml
 ├── gen
-│   ├── letter-for-John.txt
+│   ├── letter-for-john-hammond.txt
 │   ├── letter-for-මංගලිකා.txt
-│   └── letter-for-සමන්.txt
-└── letter.txt.hbs
+│   ├── letter-for-සමන්.txt
+│   └── letters.txt
+├── letter.txt.hbs
+└── overview.txt.hbs
 
-1 directory, 5 files
+1 directory, 7 files
 ```
 # Example Acchuwa Config
 Acchu configurations are written in YAML. A single configuration file can contain multiple templates that will be run against given parameter groups.
 ```yaml 
-acchuwa: 1.0.0
+acchuwa: 1.1.0
 templates:
   Generate letters on Acchuwa:
     file: letter.txt.hbs
     outputDirectory: gen/
-    outFileTemplate: letter-for-{{name}}.txt
+    outFileTemplate: letter-for-{{kebabCase name}}.txt
+  Generate letters overview:
+    file: overview.txt.hbs
+    outputDirectory: gen/
+    parameterScope: global
+    outFileTemplate: letters.txt
 parameters:
-- name: John
+- name: John Hammond
 - name: මංගලිකා
 - name: සමන්
-
 ```
