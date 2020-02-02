@@ -3,6 +3,7 @@ import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'fs'
 import {compile, registerHelper, SafeString} from 'handlebars'
 import {join} from 'path'
 import {singular, plural} from 'pluralize'
+import * as _ from 'lodash'
 import {BaseLogger} from 'pino'
 
 export interface AcchuwaServiceFacade {
@@ -23,6 +24,18 @@ export class AcchuwaService implements AcchuwaServiceFacade {
       })
       registerHelper('plural', text => {
         return new SafeString(plural(text))
+      })
+      registerHelper('capitalize', text => {
+        return new SafeString(_.capitalize(text))
+      })
+      registerHelper('kebabCase', text => {
+        return new SafeString(_.kebabCase(text))
+      })
+      registerHelper('snakeCase', text => {
+        return new SafeString(_.snakeCase(text))
+      })
+      registerHelper('camelCase', text => {
+        return new SafeString(_.camelCase(text))
       })
     }
 
