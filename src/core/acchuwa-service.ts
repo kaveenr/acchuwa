@@ -37,6 +37,9 @@ export class AcchuwaService implements AcchuwaServiceFacade {
       registerHelper('camelCase', text => {
         return new SafeString(_.camelCase(text))
       })
+      registerHelper('capitalCase', text => {
+        return new SafeString(_.upperFirst(_.camelCase(text)))
+      })
     }
 
     generate(config: ConfigModel): boolean {
