@@ -1,6 +1,6 @@
 import {ConfigModel, AcchuTemplateModel, ParameterScopeEnum} from './models/config-models'
 import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'fs'
-import {compile, registerHelper, SafeString} from 'handlebars'
+import {compile, registerHelper, SafeString, registerPartial} from 'handlebars'
 import {join} from 'path'
 import {singular, plural} from 'pluralize'
 import * as _ from 'lodash'
@@ -40,6 +40,13 @@ export class AcchuwaService implements AcchuwaServiceFacade {
     }
 
     generate(config: ConfigModel): boolean {
+      if (config.partials) {
+        const partials = Object.entries(config.partials)
+        this.log.info(partials.length + ' partials registered')
+        for (const [partialName, partialFilePath] of partials) {
+          registerPartial(partialName, this.loadTemplate(partialFilePath))
+        }
+      }
       for (const [templateName, template] of Object.entries(config.templates)) {
         this.log.info('Procesing Acchu template ' + templateName)
         this.processTemplate(template, config.parameters)
