@@ -1,4 +1,4 @@
-import {ConfigModel, AcchuTemplateModel} from './models/config-models'
+import {ConfigModel, AcchuTemplateModel, ParameterScopeEnum} from './models/config-models'
 import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'fs'
 import {compile, registerHelper, SafeString} from 'handlebars'
 import {join} from 'path'
@@ -58,14 +58,21 @@ export class AcchuwaService implements AcchuwaServiceFacade {
         mkdirSync(outPath, {recursive: true})
       }
 
-      for (const params of parameters) {
-        const fileName = this.buildFilename(template.outFileTemplate, params)
-        const fileContent = hbsTemplate(params)
-
-        this.writeOutput(fileName, fileContent, outPath)
-        this.log.info('Compiled file ' + fileName)
+      if (template.parameterScope && template.parameterScope === ParameterScopeEnum.Global) {
+        this.processSingleTemplate(template, parameters, hbsTemplate, outPath)
+      } else {
+        for (const params of parameters) {
+          this.processSingleTemplate(template, params, hbsTemplate, outPath)
+        }
       }
       this.log.info('Processed ' + parameters.length + ' parameters for template')
+    }
+
+    private processSingleTemplate(template: AcchuTemplateModel, params: any, hbsTemplate: HandlebarsTemplateDelegate<any>, outPath: string) {
+      const fileName = this.buildFilename(template.outFileTemplate, params)
+      const fileContent = hbsTemplate(params)
+      this.writeOutput(fileName, fileContent, outPath)
+      this.log.info('Compiled file ' + fileName)
     }
 
     private writeOutput(fileName: string, fileContent: string, outputDirectory: string) {

@@ -1,9 +1,14 @@
-acchuwa: 0.0.2
+acchuwa: 1.0.0
 templates:
   Generate letters on Acchuwa:
     file: letter.txt.hbs
     outputDirectory: gen/
     outFileTemplate: letter-for-{{kebabCase name}}.txt
+  Generate letters overview:
+    file: overview.txt.hbs
+    outputDirectory: gen/
+    parameterScope: global
+    outFileTemplate: letters.txt
 parameters:
 - name: John Hammond
 - name: මංගලිකා
