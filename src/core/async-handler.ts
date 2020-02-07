@@ -1,29 +1,43 @@
-import * as uuid from "uuid"
-import {compile, registerHelper, SafeString, registerPartial} from 'handlebars'
-import {safeDump} from 'js-yaml';
+import * as uuid from 'uuid'
+import {compile, registerPartial} from 'handlebars'
+
+interface AsyncItem {
+  id: string;
+  item: Promise<string>;
+}
+
+interface ResolvedAsyncItem {
+  id: string;
+  item: string;
+}
 
 export class AsyncHandler {
-    
-    private waiter:Map<string, Promise<any>>
+    private waiter: Array<AsyncItem>
 
-    constructor(){
-        this.waiter = new Map();
+    constructor() {
+      this.waiter = []
     }
 
-    public register(data: Promise<any>): string{
-        const id = uuid.v4();
-        this.waiter.set(id, data);
-        return "{{> " + id + "}}";
+    public register(data: Promise<string>): string {
+      const id = uuid.v4()
+      this.waiter.push({
+        id: id,
+        item: data,
+      } as AsyncItem)
+      return '{{> ' + id + '}}'
     }
 
-    public async resolveTemplate(template:string): Promise<string> {
-        for (const [id, data] of this.waiter) {
-            const compiled = await data;
-            registerPartial(id, safeDump(compiled, {
-                noRefs: true
-            }))
-        }
-        return compile(template)({})
-    }
+    public async resolveTemplate(template: string): Promise<string> {
+      const resolvedData = await Promise.all(this.waiter.map(async singleItem => {
+        return {
+          id: singleItem.id,
+          item: await singleItem.item,
+        } as ResolvedAsyncItem
+      }))
 
+      resolvedData.forEach(element => {
+        registerPartial(element.id, element.item)
+      })
+      return compile(template)({})
+    }
 }

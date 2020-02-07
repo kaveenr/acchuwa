@@ -6,7 +6,8 @@ import {singular, plural} from 'pluralize'
 import * as _ from 'lodash'
 import {BaseLogger} from 'pino'
 import $RefParser from 'json-schema-ref-parser'
-import { AsyncHandler } from './async-handler'
+import {AsyncHandler} from './async-handler'
+import {safeDump} from 'js-yaml'
 
 export interface AcchuwaServiceFacade {
   generate(config: ConfigModel): boolean;
@@ -14,12 +15,14 @@ export interface AcchuwaServiceFacade {
 
 export class AcchuwaService implements AcchuwaServiceFacade {
     private basePath: string;
+
     private log: BaseLogger;
+
     private asyncHandler: AsyncHandler;
 
     constructor(basePath: string, logger: BaseLogger) {
       this.basePath = basePath
-      this.asyncHandler = new AsyncHandler();
+      this.asyncHandler = new AsyncHandler()
       this.log = logger
 
       registerHelper('singular', text => {
@@ -44,8 +47,13 @@ export class AcchuwaService implements AcchuwaServiceFacade {
         return new SafeString(_.upperFirst(_.camelCase(text)))
       })
       registerHelper('deReferenceYAML', yamlPath => {
-        const block = $RefParser.dereference(join(this.basePath, yamlPath))
-        const id = this.asyncHandler.register(block)
+        const id = this.asyncHandler.register(new Promise<string>(resolve => {
+          $RefParser.dereference(join(this.basePath, yamlPath)).then(value => {
+            resolve(safeDump(value, {
+              noRefs: true,
+            }))
+          })
+        }))
         return new SafeString(id)
       })
     }

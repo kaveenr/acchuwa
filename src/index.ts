@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import {getAcchuwaService, ConfigModel} from './core'
 import {dirname} from 'path'
 import pino from 'pino'
-import $RefParser from "json-schema-ref-parser";
+import $RefParser from 'json-schema-ref-parser'
 
 class Acchuwa extends Command {
   static description = 'Acchuwa quick and dirty templating'
