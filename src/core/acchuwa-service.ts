@@ -5,6 +5,8 @@ import {join} from 'path'
 import {singular, plural} from 'pluralize'
 import * as _ from 'lodash'
 import {BaseLogger} from 'pino'
+import $RefParser from 'json-schema-ref-parser'
+import { AsyncHandler } from './async-handler'
 
 export interface AcchuwaServiceFacade {
   generate(config: ConfigModel): boolean;
@@ -12,11 +14,12 @@ export interface AcchuwaServiceFacade {
 
 export class AcchuwaService implements AcchuwaServiceFacade {
     private basePath: string;
-
     private log: BaseLogger;
+    private asyncHandler: AsyncHandler;
 
     constructor(basePath: string, logger: BaseLogger) {
       this.basePath = basePath
+      this.asyncHandler = new AsyncHandler();
       this.log = logger
 
       registerHelper('singular', text => {
@@ -39,6 +42,11 @@ export class AcchuwaService implements AcchuwaServiceFacade {
       })
       registerHelper('capitalCase', text => {
         return new SafeString(_.upperFirst(_.camelCase(text)))
+      })
+      registerHelper('deReferenceYAML', yamlPath => {
+        const block = $RefParser.dereference(join(this.basePath, yamlPath))
+        const id = this.asyncHandler.register(block)
+        return new SafeString(id)
       })
     }
 
@@ -78,11 +86,11 @@ export class AcchuwaService implements AcchuwaServiceFacade {
       this.log.info('Processed ' + parameters.length + ' parameters for template')
     }
 
-    private processSingleTemplate(template: AcchuTemplateModel, params: any, hbsTemplate: HandlebarsTemplateDelegate<any>, outPath: string) {
+    private async processSingleTemplate(template: AcchuTemplateModel, params: any, hbsTemplate: HandlebarsTemplateDelegate<any>, outPath: string) {
       const fileName = this.buildFilename(template.outFileTemplate, params)
-      const fileContent = hbsTemplate(params)
+      const fileContent = await this.asyncHandler.resolveTemplate(hbsTemplate(params))
       this.writeOutput(fileName, fileContent, outPath)
-      this.log.info('Compiled file ' + fileName)
+      this.log.info('Compiled file ' + outPath + fileName)
     }
 
     private writeOutput(fileName: string, fileContent: string, outputDirectory: string) {
