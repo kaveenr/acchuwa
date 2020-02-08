@@ -1,7 +1,7 @@
 {
   "name": "@kaveenr/acchuwa",
   "description": "Acchuwa quick and dirty templating",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "Kaveen Rodrigo @kaveenr",
   "bin": {
     "acchuwa": "./bin/run"
