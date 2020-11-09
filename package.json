@@ -28,7 +28,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1",
     "@types/node": "^10",
-    "eslint": "^5.13",
+    "eslint": "^7.13",
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.2",
     "ts-node": "^8",
