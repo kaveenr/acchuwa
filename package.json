@@ -23,7 +23,7 @@
     "pino-pretty": "^3.5.0",
     "pluralize": "^8.0.0",
     "tslib": "^1",
-    "uuid": "^3.4.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
